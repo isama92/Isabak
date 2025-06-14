@@ -1,0 +1,23 @@
+global:
+  base_domain: "https://yourdomain.com"
+  destination: "/home/user/backups"
+  borg_repository: "ssh://repository/"
+  borg_passphrase: "passphrase"
+  mysql:
+    container: "mysql"
+    username: "username"
+    password: "password"
+  postgres:
+    container: "postgres"
+
+services:
+  your_service:
+    folder: "/home/user/your_service_files"
+    mysql:
+      db_name: "your_service_db"
+    mariadb:
+      db_name: "your_service_db"
+    postgres:
+      username: "username"
+      password: "password"
+      database: "your_service_db"
