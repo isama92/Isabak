@@ -7,6 +7,10 @@ global:
     container: "mysql"
     username: "username"
     password: "password"
+  mariadb:
+    container: "mariadb"
+    username: "username"
+    password: "password"
   postgres:
     container: "postgres"
 

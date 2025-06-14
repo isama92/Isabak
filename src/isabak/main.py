@@ -1,6 +1,7 @@
 from src.isabak.config import load_config
 from src.isabak.services.fs_backup import fs_backup
 from src.isabak.services.mysql_backup import mysql_backup
+from src.isabak.services.mariadb_backup import mariadb_backup
 import os
 import logging
 
@@ -39,6 +40,9 @@ def main():
 
         if service_options.get('mysql') is not None:
             mysql_backup(service_name, service_options.get('mysql'), config_global.get('mysql'), destination)
+
+        if service_options.get('mariadb') is not None:
+            mariadb_backup(service_name, service_options.get('mariadb'), config_global.get('mariadb'), destination)
 
         logger.info(f'{service_name} finished')
 
