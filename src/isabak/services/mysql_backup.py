@@ -24,10 +24,9 @@ def mysql_backup(
         delete_credentials(db_container)
     except Exception as e:
         logger.exception(e, stack_info=True)
-        logger.error(f"mysql backup for service '{service_name}' failed")
         return
 
-    logger.debug(f"mysql backup for service '{service_name}' finished successfully")
+    logger.debug("mysql backup completed successfully")
 
 
 def create_credentials(db_container: str, db_username: str, db_password: str):

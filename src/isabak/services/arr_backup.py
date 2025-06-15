@@ -1,4 +1,5 @@
 from logging import getLogger
+import requests
 
 logger = getLogger(__name__)
 
@@ -19,12 +20,14 @@ def arr_backup(
 
     base_url = build_base_url(domain, subdomain, endpoint, secure)
 
-    delete_existing_backups(base_url, api_key)
-    create_backup(base_url, api_key)
-    wait_backup_creation(folder)
-    copy_backup(folder, destination)
+    if not delete_existing_backups(base_url, api_key):
+        return
 
-    logger.debug(f"arr backup for service '{service_name}' finished successfully")
+    create_backup(service_name, base_url, api_key)
+    wait_backup_creation(folder)
+    copy_backup(service_name, folder, destination)
+
+    logger.debug(f"arr backup completed successfully")
 
 
 def build_base_url(
@@ -39,13 +42,42 @@ def build_base_url(
     return f"{scheme}://{host}{endpoint}"
 
 
-def delete_existing_backups(base_url: str, api_key: str):
-    # TODO: list backups
-    # TODO: loop backups and delete them
-    pass
+def delete_existing_backups(base_url: str, api_key: str) -> bool:
+    headers = {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "X-Api-Key": api_key,
+    }
+
+    response = requests.get(f"{base_url}/system/backup", headers=headers)
+
+    if response.status_code != 200:
+        logger.error(f"backups list request failed with code {response.status_code}")
+        return False
+
+    backups = response.json()
+
+    logger.debug(f"{len(backups)} backups found'")
+
+    for backup in backups:
+        backup_id = backup.get("id")
+        if backup_id is None:
+            logger.error(f"backup did not contain the backup id")
+            return False
+        response = requests.delete(
+            f"{base_url}/system/backup/{backup_id}", headers=headers
+        )
+        if response.status_code != 200:
+            logger.error(
+                f"deletion of backup '{backup_id}' failed with code {response.status_code}"
+            )
+            return False
+
+    logger.debug(f"{len(backups)} backups deleted")
+    return True
 
 
-def create_backup(base_url: str, api_key: str):
+def create_backup(service_name: str, base_url: str, api_key: str):
     # TODO: create backup
     pass
 
@@ -56,7 +88,7 @@ def wait_backup_creation(folder: str):
     pass
 
 
-def copy_backup(folder: str, destination: str):
+def copy_backup(service_name: str, folder: str, destination: str):
     # TODO: copy the backup to destination
     pass
 

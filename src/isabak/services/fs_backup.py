@@ -33,10 +33,9 @@ def fs_backup(service_name: str, service_options: dict, destination: str):
         subprocess.run(["rsync", "-a", folder, destination], check=True)
     except Exception as e:
         logger.exception(e, stack_info=True)
-        logger.error(f"fs backup for service '{service_name}' failed")
         return
 
-    logger.debug(f"fs backup for service '{service_name}' finished successfully")
+    logger.debug("fs backup completed successfully")
 
 
 def check_options(service_name: str, folder: str | None):
