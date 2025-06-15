@@ -13,6 +13,8 @@ Run `cp .env.example .env` and `cp config.yaml.example config.yaml` to create th
 The `.env` variable will override the `config.yaml` variables.
 e.g. if you set both the `global.destination` in the `config.yaml` and the `DESTINATION` in the `.env`, the `.env` value will be used.
 
+`.env` supports environment variables, eg. `DESTINATION="${BACKUP_BASE_PATH}backups"` 
+
 ### Env to Yaml mapping
 DOMAIN => global.domain
 DESTINATION => global.destination

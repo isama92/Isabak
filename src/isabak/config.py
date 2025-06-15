@@ -51,9 +51,7 @@ def merge_config(config: dict) -> dict:
 
     env_domain = getenv("DOMAIN")
     if env_domain is not None:
-        config["global"]["domain"] = env_domain.replace(
-            "${SRV_DOMAIN}", getenv("SRV_DOMAIN", "")
-        )
+        config["global"]["domain"] = env_domain
 
     return config
 
