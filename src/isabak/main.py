@@ -14,10 +14,11 @@ logging.basicConfig(
 )
 
 logger = logging.getLogger(__name__)
+app_name = "isabak"
 
 
 def main():
-    logger.info("isabak started")
+    logger.info(f"{app_name} started")
 
     config_file_path = "config.yaml"
     env_file_path = ".env"
@@ -37,9 +38,10 @@ def main():
 
     config_global = config.get("global")
 
-    base_destination = path_join(config_global.get("destination"), "isabak")
-    rmtree(base_destination)
-    makedirs(base_destination)
+    base_destination = get_base_destination(config_global.get("destination"))
+
+    if base_destination is None:
+        return
 
     logger.debug("starting backups")
 
@@ -86,7 +88,26 @@ def main():
 
         logger.info(f"{service_name} finished")
 
-    logger.info("isabak finished")
+    logger.info(f"{app_name} finished")
+
+
+def get_base_destination(destination: str) -> str | None:
+    base_destination = path_join(destination, app_name)
+
+    try:
+        rmtree(base_destination)
+        pass
+    except Exception as e:
+        logger.error(f"could not remove existing backup destination folder ({e})")
+        return None
+
+    try:
+        makedirs(base_destination)
+    except Exception as e:
+        logger.error(f"could not create backup destination folder ({e})")
+        return None
+
+    return base_destination
 
 
 if __name__ == "__main__":
