@@ -9,21 +9,29 @@ logger = logging.getLogger(__name__)
 def load_env(path: str) -> None:
     logger.debug(f"loading {path}")
 
+    if not os.path.exists(path):
+        logger.debug(f"{path} not found")
+        return
+
     load_dotenv(path)
 
     logger.debug(f"{path} loaded")
 
 
-def load_config(path: str) -> dict:
+def load_config(path: str) -> dict | None:
     logger.debug(f"loading {path}")
 
     try:
         f = open(path, "r")
     except FileNotFoundError:
-        logger.error(f"config file {path} not found")
-        return {}
+        logger.error(f"{path} not found")
+        return None
 
     config = yaml.safe_load(f)
+
+    if not isinstance(config, dict):
+        logger.error(f"{path} is empty or not valid")
+        return None
 
     if config.get("global") is None:
         config["global"] = {}
@@ -34,7 +42,7 @@ def load_config(path: str) -> dict:
 
 
 def merge_config(config: dict) -> dict:
-    logger.debug(f"merging .env and config.yaml files")
+    logger.debug(f"merging env into config")
 
     env_destination = os.environ.get("DESTINATION")
     if env_destination is not None:
@@ -59,7 +67,7 @@ def verify_config(config: dict) -> bool:
     if config.get("global").get("domain") is None:
         logger.debug("global.domain config was not set")
 
-    if config.get("services") is None:
+    if not isinstance(config.get("services"), dict):
         logger.error("no services defined in config file")
         return False
 

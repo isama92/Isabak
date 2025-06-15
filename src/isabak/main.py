@@ -20,6 +20,10 @@ def main():
 
     load_env(env_file_path)
     config = load_config(config_file_path)
+
+    if config is None:
+        return
+
     config = merge_config(config)
 
     if not verify_config(config):
@@ -33,6 +37,10 @@ def main():
 
     for service_name, service_options in config.get("services").items():
         logger.info(f"{service_name} starting")
+
+        if not isinstance(service_options, dict):
+            logger.error(f"service '{service_name}' options are not valid")
+            continue
 
         destination = str(
             os.path.join(config_global.get("destination"), service_name, "")

@@ -27,6 +27,8 @@ MariaDB dump tool changed from mysqldump to mariadb-dump since mariadb 10.5, pri
 
 Do a run and **check all the backups are working**. Also check the content of gzipped files.
 
+A folder `isabak` will be created at the `global.destination` and backups will be added inside, the folder will be deleted and recreated each usage.
+
 ## TODO
 - Change logs level using config.yaml `global.log_level`
 - move logger config to another file instead of main.py
