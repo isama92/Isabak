@@ -43,7 +43,7 @@ def create_backup(service_options: dict, db_options: dict, destination: str):
 
     dump_cmd = [
         "docker", "exec", mariadb_container,
-        "/usr/bin/mysqldump",
+        "/usr/bin/mariadb-dump",
         "--defaults-extra-file=/backup.cnf",
         "--single-transaction",
         db_name
