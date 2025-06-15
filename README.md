@@ -39,3 +39,4 @@ A folder `isabak` will be created at the `global.destination` and backups will b
 - automated tests
 - log files in debug mode that keeps 1 week of logs
   - it will show borgbackup disk usage and upload times
+- allow arrays in yaml config services, to have multiple fs or multiple DBs

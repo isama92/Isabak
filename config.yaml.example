@@ -32,3 +32,16 @@ services:
       api_key: "api-key"
       folder: "/home/user/your_service_files/backups"
       secure: true
+borg:
+  repository: "ssh://user@host:/path/to/repo"
+  passphrase: "your-passphrase"
+  folders:
+    - repository: "/docker-services"
+      folder: "/home/user/backups"
+      compression: "zstd,9"
+    - repository: "/pictures"
+      folder: "${DATA_PATH}/Pictures"
+      compression: "lz4"
+    - repository: "/homes"
+      folder: "/home"
+      compression: "zstd,5"

@@ -4,6 +4,7 @@ from src.isabak.services.mysql_backup import mysql_backup
 from src.isabak.services.mariadb_backup import mariadb_backup
 from src.isabak.services.postgres_backup import postgres_backup
 from src.isabak.services.arr_backup import arr_backup
+from src.isabak.borg import borg
 from os import makedirs
 from os.path import join as path_join
 import logging
@@ -87,6 +88,9 @@ def main():
             )
 
         logger.info(f"{service_name} finished")
+
+    if config.get("borg") is not None:
+        borg(config.get("borg"))
 
     logger.info(f"{app_name} finished")
 
