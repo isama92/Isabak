@@ -13,7 +13,9 @@ Run `cp .env.example .env` and `cp config.yaml.example config.yaml` to create th
 The `.env` variable will override the `config.yaml` variables.
 e.g. if you set both the `global.destination` in the `config.yaml` and the `DESTINATION` in the `.env`, the `.env` value will be used.
 
-`.env` supports environment variables, eg. `DESTINATION="${BACKUP_BASE_PATH}backups"` 
+`.env` supports environment variables, e.g. `DESTINATION="${BACKUP_BASE_PATH}backups"` 
+
+All services paths can use ${} to add an environment variable in the path itself. e.g. `folder: "${YOUR_SERVICE_BASE_PATH}/your_service_files"` where the env variable `YOUR_SERVICE_BASE_PATH` is `/home/user/` will become `/home/user/your_service_files`. In this specific situations, env variables can only be named with letter numbers and underscores (`_`). 
 
 ### Env to Yaml mapping
 DOMAIN => global.domain

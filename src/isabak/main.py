@@ -53,7 +53,7 @@ def main():
         makedirs(destination, exist_ok=True)
 
         if "folder" in service_options:
-            fs_backup(service_name, service_options, destination)
+            fs_backup(service_name, service_options.get("folder"), destination)
 
         if service_options.get("mysql") is not None:
             mysql_backup(
