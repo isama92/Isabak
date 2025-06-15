@@ -1,5 +1,5 @@
 global:
-  base_domain: "https://yourdomain.com"
+  domain: "https://yourdomain.com"
   destination: "/home/user/backups"
   borg_repository: "ssh://repository/"
   borg_passphrase: "passphrase"
