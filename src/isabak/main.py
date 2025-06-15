@@ -2,6 +2,7 @@ from src.isabak.config import *
 from src.isabak.services.fs_backup import fs_backup
 from src.isabak.services.mysql_backup import mysql_backup
 from src.isabak.services.mariadb_backup import mariadb_backup
+from src.isabak.services.postgres_backup import postgres_backup
 from src.isabak.services.arr_backup import arr_backup
 from os import makedirs
 from os.path import join as path_join
@@ -71,6 +72,9 @@ def main():
                 config_global.get("mariadb", {}),
                 destination,
             )
+
+        if service_options.get("postgres") is not None:
+            postgres_backup(service_name, service_options.get("postgres"), destination)
 
         if service_options.get("arr") is not None:
             arr_backup(
