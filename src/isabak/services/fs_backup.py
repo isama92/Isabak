@@ -1,8 +1,7 @@
+from src.isabak.helpers import replace_env_vars
 from os.path import join as path_join, exists as path_exists
-from os import getenv
 from logging import getLogger
 import subprocess
-from re import compile as re_compile
 
 logger = getLogger(__name__)
 
@@ -18,7 +17,7 @@ def fs_backup(service_name: str, service_options: dict, destination: str):
     try:
         folder = replace_env_vars(service_name, folder)
     except KeyError as e:
-        logger.error(e)
+        logger.error(f"{e}, {service_name}.fs.folder")
         return
 
     folder = path_join(folder, "")
@@ -35,6 +34,8 @@ def fs_backup(service_name: str, service_options: dict, destination: str):
         logger.exception(e, stack_info=True)
         return
 
+    logger.debug(f"copied {folder} to {destination}")
+
     logger.debug("fs backup completed successfully")
 
 
@@ -43,19 +44,3 @@ def check_options(service_name: str, folder: str | None):
         logger.error(f"{service_name}.fs.folder is required")
         return False
     return True
-
-
-def replace_env_vars(service_name: str, folder: str) -> str:
-    pattern = re_compile(r"\$\{([a-zA-Z0-9_]+)\}")
-
-    def replacer(match):
-        env_var_name = match.group(1)
-        env_var = getenv(env_var_name)
-        if env_var is None:
-            raise KeyError(
-                f"environment variable '{env_var_name}' in {service_name}.fs.folder '{folder}' is required"
-            )
-        return env_var
-
-    folder = pattern.sub(replacer, folder)
-    return folder
