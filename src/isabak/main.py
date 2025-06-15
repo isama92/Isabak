@@ -2,7 +2,7 @@ from src.isabak.config import *
 from src.isabak.services.fs_backup import fs_backup
 from src.isabak.services.mysql_backup import mysql_backup
 from src.isabak.services.mariadb_backup import mariadb_backup
-from src.isabak.services.api_backup import api_backup
+from src.isabak.services.arr_backup import arr_backup
 from os import makedirs
 from os.path import join as path_join
 import logging
@@ -72,10 +72,10 @@ def main():
                 destination,
             )
 
-        if service_options.get("api") is not None:
-            api_backup(
+        if service_options.get("arr") is not None:
+            arr_backup(
                 service_name,
-                service_options.get("api"),
+                service_options.get("arr"),
                 config_global.get("domain"),
                 destination,
             )

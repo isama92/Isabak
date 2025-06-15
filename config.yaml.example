@@ -26,3 +26,9 @@ services:
       username: "username"
       password: "password"
       database: "your_service_db"
+    arr:
+      endpoint: "/api/v3"
+      subdomain: "radarr"
+      api_key: "api-key"
+      folder: "/home/user/your_service_files/backups"
+      secure: true
