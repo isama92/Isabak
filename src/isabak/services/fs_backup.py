@@ -7,36 +7,46 @@ from re import compile as re_compile
 logger = getLogger(__name__)
 
 
-def fs_backup(service_name: str, source: str | None, destination: str):
-    logger.debug(f"{service_name} starting")
+def fs_backup(service_name: str, service_options: dict, destination: str):
+    logger.debug(f"fs backup for service '{service_name}' started")
 
-    if source is None:
-        logger.error(f"source folder config was not set")
+    folder = service_options.get("folder")
+
+    if not check_options(service_name, folder):
         return
 
     try:
-        source = replace_env_vars(service_name, source)
+        folder = replace_env_vars(service_name, folder)
     except KeyError as e:
         logger.error(e)
         return
 
-    source = path_join(source, "")
+    folder = path_join(folder, "")
 
-    if not path_exists(source):
-        logger.error(f"source folder {source} does not exist")
+    if not path_exists(folder):
+        logger.error(
+            f"{service_name}.fs.folder '{folder}' does not exist in filesystem"
+        )
         return
 
     try:
-        subprocess.run(["rsync", "-a", source, destination], check=True)
+        subprocess.run(["rsync", "-a", folder, destination], check=True)
     except Exception as e:
         logger.exception(e, stack_info=True)
-        logger.error(f"{service_name} finished with errors")
+        logger.error(f"fs backup for service '{service_name}' failed")
         return
 
-    logger.debug(f"{service_name} finished")
+    logger.debug(f"fs backup for service '{service_name}' finished successfully")
 
 
-def replace_env_vars(service_name: str, source: str) -> str:
+def check_options(service_name: str, folder: str | None):
+    if folder is None:
+        logger.error(f"{service_name}.fs.folder is required")
+        return False
+    return True
+
+
+def replace_env_vars(service_name: str, folder: str) -> str:
     pattern = re_compile(r"\$\{([a-zA-Z0-9_]+)\}")
 
     def replacer(match):
@@ -44,9 +54,9 @@ def replace_env_vars(service_name: str, source: str) -> str:
         env_var = getenv(env_var_name)
         if env_var is None:
             raise KeyError(
-                f"environment variable '{env_var_name}' in service '{service_name}' is not set"
+                f"environment variable '{env_var_name}' in {service_name}.fs.folder '{folder}' is required"
             )
         return env_var
 
-    source = pattern.sub(replacer, source)
-    return source
+    folder = pattern.sub(replacer, folder)
+    return folder

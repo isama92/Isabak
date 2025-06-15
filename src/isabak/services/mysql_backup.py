@@ -6,45 +6,41 @@ logger = getLogger(__name__)
 
 
 def mysql_backup(
-    service_name: str, service_options: dict, db_options: dict | None, destination: str
+    service_name: str, service_options: dict, db_options: dict, destination: str
 ):
-    logger.debug(f"{service_name} starting")
+    logger.debug(f"mysql backup for service '{service_name}' started")
 
-    if service_options.get("db_name") is None:
-        logger.error(f"db_name is not set")
-        return
+    db_name = service_options.get("db_name")
+    db_container = db_options.get("container")
+    db_username = db_options.get("username")
+    db_password = db_options.get("password")
 
-    if not check_credentials(db_options):
+    if not check_options(service_name, db_name, db_container, db_username, db_password):
         return
 
     try:
-        create_credentials(db_options)
-        create_backup(service_options, db_options, destination)
-        delete_credentials(db_options)
+        create_credentials(db_container, db_username, db_password)
+        create_backup(db_name, db_container, destination)
+        delete_credentials(db_container)
     except Exception as e:
         logger.exception(e, stack_info=True)
-        logger.error(f"{service_name} finished with errors")
+        logger.error(f"mysql backup for service '{service_name}' failed")
         return
 
-    logger.debug(f"{service_name} finished")
+    logger.debug(f"mysql backup for service '{service_name}' finished successfully")
 
 
-def create_credentials(db_options: dict):
-    mysql_container = db_options.get("container")
-    mysql_username = db_options.get("username")
-    mysql_password = db_options.get("password")
-    cmd = f"""echo -e "[client]\\nuser={mysql_username}\\npassword={mysql_password}\\nhost=localhost\\n" > /backup.cnf"""
-    subprocess.run(["docker", "exec", mysql_container, "bash", "-c", cmd], check=True)
+def create_credentials(db_container: str, db_username: str, db_password: str):
+    cmd = f"""echo -e "[client]\\nuser={db_username}\\npassword={db_password}\\nhost=localhost\\n" > /backup.cnf"""
+    subprocess.run(["docker", "exec", db_container, "bash", "-c", cmd], check=True)
 
 
-def create_backup(service_options: dict, db_options: dict, destination: str):
-    db_name = service_options.get("db_name")
-    mysql_container = db_options.get("container")
+def create_backup(db_name: str, db_container: str, destination: str):
 
     dump_cmd = [
         "docker",
         "exec",
-        mysql_container,
+        db_container,
         "/usr/bin/mysqldump",
         "--defaults-extra-file=/backup.cnf",
         "--single-transaction",
@@ -59,26 +55,27 @@ def create_backup(service_options: dict, db_options: dict, destination: str):
         gzip.wait()
 
 
-def check_credentials(db_options: dict | None) -> bool:
-    if db_options is None:
-        logger.error(f"mysql global configs are not set")
+def check_options(
+    service_name: str,
+    db_name: str | None,
+    db_container: str | None,
+    db_username: str | None,
+    db_password: str | None,
+) -> bool:
+    if db_name is None:
+        logger.error(f"{service_name}.mysql.db_name is required")
         return False
-
-    if "container" not in db_options:
-        logger.error(f"mysql container is not set")
+    if db_container is None:
+        logger.error(f"global.mariadb.container is required")
         return False
-
-    if "username" not in db_options:
-        logger.error(f"mysql username is not set")
+    if db_username is None:
+        logger.error(f"global.mariadb.username is required")
         return False
-
-    if "password" not in db_options:
-        logger.error(f"mysql password is not set")
+    if db_password is None:
+        logger.error(f"global.mariadb.password is required")
         return False
-
     return True
 
 
-def delete_credentials(db_options: dict):
-    mysql_container = db_options.get("container")
-    subprocess.run(["docker", "exec", mysql_container, "rm", "/backup.cnf"], check=True)
+def delete_credentials(db_container: str):
+    subprocess.run(["docker", "exec", db_container, "rm", "/backup.cnf"], check=True)

@@ -1,5 +1,5 @@
 global:
-  domain: "https://yourdomain.com"
+  domain: "yourdomain.com"
   destination: "/home/user/backups"
   borg_repository: "ssh://repository/"
   borg_passphrase: "passphrase"
@@ -16,7 +16,8 @@ global:
 
 services:
   your_service:
-    folder: "/home/user/your_service_files"
+    fs:
+      folder: "/home/user/your_service_files"
     mysql:
       db_name: "your_service_db"
     mariadb:

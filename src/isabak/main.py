@@ -2,6 +2,7 @@ from src.isabak.config import *
 from src.isabak.services.fs_backup import fs_backup
 from src.isabak.services.mysql_backup import mysql_backup
 from src.isabak.services.mariadb_backup import mariadb_backup
+from src.isabak.services.api_backup import api_backup
 from os import makedirs
 from os.path import join as path_join
 import logging
@@ -52,14 +53,14 @@ def main():
 
         makedirs(destination, exist_ok=True)
 
-        if "folder" in service_options:
-            fs_backup(service_name, service_options.get("folder"), destination)
+        if service_options.get("fs") is not None:
+            fs_backup(service_name, service_options.get("fs"), destination)
 
         if service_options.get("mysql") is not None:
             mysql_backup(
                 service_name,
                 service_options.get("mysql"),
-                config_global.get("mysql"),
+                config_global.get("mysql", {}),
                 destination,
             )
 
@@ -67,7 +68,15 @@ def main():
             mariadb_backup(
                 service_name,
                 service_options.get("mariadb"),
-                config_global.get("mariadb"),
+                config_global.get("mariadb", {}),
+                destination,
+            )
+
+        if service_options.get("api") is not None:
+            api_backup(
+                service_name,
+                service_options.get("api"),
+                config_global.get("domain"),
                 destination,
             )
 
