@@ -1,8 +1,8 @@
-import logging
+from logging import getLogger
 from os.path import join as path_join
 import subprocess
 
-logger = logging.getLogger(__name__)
+logger = getLogger(__name__)
 
 
 def mariadb_backup(
@@ -22,7 +22,7 @@ def mariadb_backup(
         create_backup(service_options, db_options, destination)
         delete_credentials(db_options)
     except Exception as e:
-        logging.exception(e, stack_info=True)
+        logger.exception(e, stack_info=True)
         logger.error(f"{service_name} finished with errors")
         return
 

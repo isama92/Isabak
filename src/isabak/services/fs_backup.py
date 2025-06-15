@@ -1,8 +1,8 @@
-import os
-import logging
+from os.path import join as path_join, exists as path_exists
+from logging import getLogger
 import subprocess
 
-logger = logging.getLogger(__name__)
+logger = getLogger(__name__)
 
 
 def fs_backup(service_name: str, config: dict, destination: str):
@@ -12,13 +12,11 @@ def fs_backup(service_name: str, config: dict, destination: str):
         logger.error(f"source folder config was not set")
         return
 
-    source = os.path.join(config["folder"], "")
+    source = path_join(config["folder"], "")
 
-    if not os.path.exists(source):
+    if not path_exists(source):
         logger.error(f"source folder {source} does not exist")
         return
-
-    os.makedirs(destination, exist_ok=True)
 
     try:
         subprocess.run(["rsync", "-a", source, destination], check=True)

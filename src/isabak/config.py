@@ -1,15 +1,16 @@
-import yaml
-import os
-import logging
+from yaml import safe_load as yaml_load
+from os import getenv
+from os.path import exists as path_exists
+from logging import getLogger
 from dotenv import load_dotenv
 
-logger = logging.getLogger(__name__)
+logger = getLogger(__name__)
 
 
 def load_env(path: str) -> None:
     logger.debug(f"loading {path}")
 
-    if not os.path.exists(path):
+    if not path_exists(path):
         logger.debug(f"{path} not found")
         return
 
@@ -27,7 +28,7 @@ def load_config(path: str) -> dict | None:
         logger.error(f"{path} not found")
         return None
 
-    config = yaml.safe_load(f)
+    config = yaml_load(f)
 
     if not isinstance(config, dict):
         logger.error(f"{path} is empty or not valid")
@@ -44,14 +45,14 @@ def load_config(path: str) -> dict | None:
 def merge_config(config: dict) -> dict:
     logger.debug(f"merging env into config")
 
-    env_destination = os.environ.get("DESTINATION")
+    env_destination = getenv("DESTINATION")
     if env_destination is not None:
         config["global"]["destination"] = env_destination
 
-    env_domain = os.environ.get("DOMAIN")
+    env_domain = getenv("DOMAIN")
     if env_domain is not None:
         config["global"]["domain"] = env_domain.replace(
-            "${SRV_DOMAIN}", os.getenv("SRV_DOMAIN", "")
+            "${SRV_DOMAIN}", getenv("SRV_DOMAIN", "")
         )
 
     return config

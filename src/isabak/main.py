@@ -2,8 +2,10 @@ from src.isabak.config import *
 from src.isabak.services.fs_backup import fs_backup
 from src.isabak.services.mysql_backup import mysql_backup
 from src.isabak.services.mariadb_backup import mariadb_backup
-import os
+from os import makedirs
+from os.path import join as path_join
 import logging
+from shutil import rmtree
 
 logging.basicConfig(
     level=logging.DEBUG, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
@@ -33,6 +35,10 @@ def main():
 
     config_global = config.get("global")
 
+    base_destination = path_join(config_global.get("destination"), "isabak")
+    rmtree(base_destination)
+    makedirs(base_destination)
+
     logger.debug("starting backups")
 
     for service_name, service_options in config.get("services").items():
@@ -42,13 +48,9 @@ def main():
             logger.error(f"service '{service_name}' options are not valid")
             continue
 
-        destination = str(
-            os.path.join(config_global.get("destination"), service_name, "")
-        )
+        destination = str(path_join(base_destination, service_name, ""))
 
-        if service_options is None:
-            logger.error(f"service {service_name} has no options")
-            continue
+        makedirs(destination, exist_ok=True)
 
         if "folder" in service_options:
             fs_backup(service_name, service_options, destination)
