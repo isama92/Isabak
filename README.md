@@ -47,8 +47,5 @@ If omitted, borg default compression will be set to `none`.
 
 ## TODO
 - allow arrays in yaml config services, to have multiple fs or multiple DBs
-- move logger config to another file instead of main.py
 - borg prune customisation
 - automated tests
-- log files in debug mode that keeps 1 week of logs
-  - it will show borgbackup disk usage and upload times

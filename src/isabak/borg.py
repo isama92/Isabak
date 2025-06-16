@@ -23,6 +23,7 @@ def borg_transfer(options: dict):
             borg_compact(entry_borg_env)
         except Exception as e:
             logger.exception(e)
+            return
 
     logger.debug("borg transfers completed")
 
@@ -53,13 +54,18 @@ def borg_create(env: dict, entry: dict):
     ]
     # fmt: on
 
-    subprocess.run(
+    process = subprocess.run(
         borg_cmd,
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
         check=True,
         env=env,
     )
+
+    if process.stdout:
+        logger.debug(process.stdout.decode().strip())
+    if process.stderr:
+        logger.debug(process.stderr.decode().strip())
 
     logger.debug(f"{env.get('BORG_REPO')} transfer completed")
 
