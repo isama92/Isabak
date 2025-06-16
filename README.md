@@ -33,6 +33,8 @@ Do a run and **check all the backups are working**. Also check the content of gz
 
 A folder `isabak` will be created at the `global.destination` and backups will be added inside, the folder will be deleted and recreated each usage.
 
+If omitted, borg default compression will be set to `none`.
+
 ## TODO
 - Change logs level using config.yaml `global.log_level`
 - move logger config to another file instead of main.py
@@ -40,3 +42,4 @@ A folder `isabak` will be created at the `global.destination` and backups will b
 - log files in debug mode that keeps 1 week of logs
   - it will show borgbackup disk usage and upload times
 - allow arrays in yaml config services, to have multiple fs or multiple DBs
+- remove "global" config, leave the various configurations in the root
