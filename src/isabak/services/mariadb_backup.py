@@ -1,4 +1,5 @@
 from os.path import join as path_join
+from os import makedirs
 import subprocess
 from src.isabak.logs import get_logger
 
@@ -17,6 +18,9 @@ def mariadb_backup(
 
     if not check_options(service_name, db_name, db_container, db_username, db_password):
         return
+
+    destination = path_join(destination, "mariadb", "")
+    makedirs(destination, exist_ok=True)
 
     try:
         create_credentials(db_container, db_username, db_password)

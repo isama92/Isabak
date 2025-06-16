@@ -1,5 +1,6 @@
 from src.isabak.helpers import replace_env_vars
 from os.path import join as path_join, exists as path_exists
+from os import makedirs
 import subprocess
 from src.isabak.logs import get_logger
 
@@ -13,6 +14,9 @@ def fs_backup(service_name: str, service_options: dict, destination: str):
 
     if not check_options(service_name, folder):
         return
+
+    destination = path_join(destination, "fs", "")
+    makedirs(destination, exist_ok=True)
 
     try:
         folder = replace_env_vars(folder)

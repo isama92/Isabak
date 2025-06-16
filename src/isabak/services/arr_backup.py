@@ -1,7 +1,7 @@
 import requests
 from json import dumps as json_dumps
 from time import sleep
-from os import listdir
+from os import listdir, makedirs
 from os.path import isfile as path_isfile, join as path_join
 from shutil import copy2 as shutil_copy2
 from src.isabak.helpers import replace_env_vars
@@ -23,6 +23,9 @@ def arr_backup(
 
     if not check_options(service_name, domain, endpoint, api_key, folder):
         return
+
+    destination = path_join(destination, "arr", "")
+    makedirs(destination, exist_ok=True)
 
     try:
         folder = replace_env_vars(folder)

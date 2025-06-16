@@ -22,6 +22,9 @@ def postgres_backup(service_name: str, service_options: dict, destination: str):
     ):
         return
 
+    destination = path_join(destination, "postgres", "")
+    makedirs(destination, exist_ok=True)
+
     tmp_folder = path_join(destination, "tmp")
     makedirs(tmp_folder, exist_ok=True)
     logger.debug("tmp folder created")
