@@ -1,8 +1,6 @@
 global:
   domain: "yourdomain.com"
   destination: "/home/user/backups"
-  borg_repository: "ssh://repository/"
-  borg_passphrase: "passphrase"
   mysql:
     container: "mysql"
     username: "username"
@@ -33,7 +31,7 @@ services:
       folder: "/home/user/your_service_files/backups"
       secure: true
 borg:
-  repository: "ssh://user@host:/path/to/repo"
+  repository: "ssh://user@host:/"
   passphrase: "your-passphrase"
   folders:
     - repository: "/docker-services"
@@ -41,7 +39,6 @@ borg:
       compression: "zstd,9"
     - repository: "/pictures"
       folder: "${DATA_PATH}/Pictures"
-      compression: "lz4"
     - repository: "/homes"
       folder: "/home"
-      compression: "zstd,5"
+      compression: "none"

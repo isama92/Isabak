@@ -25,7 +25,7 @@ def arr_backup(
         return
 
     try:
-        folder = replace_env_vars(service_name, folder)
+        folder = replace_env_vars(folder)
     except KeyError as e:
         logger.error(f"{e}, {service_name}.arr.folder")
         return

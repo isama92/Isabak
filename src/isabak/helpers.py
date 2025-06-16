@@ -2,7 +2,7 @@ from os import getenv
 from re import compile as re_compile
 
 
-def replace_env_vars(service_name: str, folder: str) -> str:
+def replace_env_vars(folder: str) -> str:
     pattern = re_compile(r"\$\{([a-zA-Z0-9_]+)\}")
 
     def replacer(match):

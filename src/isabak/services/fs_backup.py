@@ -15,7 +15,7 @@ def fs_backup(service_name: str, service_options: dict, destination: str):
         return
 
     try:
-        folder = replace_env_vars(service_name, folder)
+        folder = replace_env_vars(folder)
     except KeyError as e:
         logger.error(f"{e}, {service_name}.fs.folder")
         return
