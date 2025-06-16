@@ -12,7 +12,7 @@ logger = get_logger(__name__)
 
 
 def services_backup(config: dict):
-    logger.debug("starting services backup")
+    logger.info("starting services backup")
 
     base_destination = config.get("destination")
     services = config.get("services")
@@ -27,7 +27,7 @@ def services_backup(config: dict):
 
     for service in services:
         service_name = service.get("name")
-        logger.debug(f"{service_name} starting")
+        logger.info(f"{service_name} starting")
 
         destination = str(path_join(base_destination, service_name, ""))
 
@@ -63,9 +63,9 @@ def services_backup(config: dict):
                 destination,
             )
 
-        logger.debug(f"{service_name} finished")
+        logger.info(f"{service_name} finished")
 
-    logger.debug("services backup completed")
+    logger.info("services backup completed")
 
 
 def check_options(destination, services) -> bool:

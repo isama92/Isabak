@@ -6,7 +6,7 @@ logger = get_logger(__name__)
 
 
 def borg_transfer(options: dict):
-    logger.debug("starting borg transfers")
+    logger.info("starting borg transfers")
 
     repository = options.get("repository")
     passphrase = options.get("passphrase")
@@ -25,7 +25,7 @@ def borg_transfer(options: dict):
             logger.exception(e)
             return
 
-    logger.debug("borg transfers completed")
+    logger.info("borg transfers completed")
 
 
 def borg_env(base_repository: str, passphrase: str, entry: dict) -> dict:
