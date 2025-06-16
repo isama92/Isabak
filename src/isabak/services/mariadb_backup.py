@@ -64,13 +64,13 @@ def check_options(
         logger.error(f"{service_name}.mariadb.db_name is required")
         return False
     if db_container is None:
-        logger.error(f"global.mariadb.container is required")
+        logger.error(f"mariadb.container is required")
         return False
     if db_username is None:
-        logger.error(f"global.mariadb.username is required")
+        logger.error(f"mariadb.username is required")
         return False
     if db_password is None:
-        logger.error(f"global.mariadb.password is required")
+        logger.error(f"mariadb.password is required")
         return False
     return True
 

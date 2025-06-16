@@ -137,7 +137,7 @@ def check_options(
     folder: str | None,
 ) -> bool:
     if domain is None:
-        logger.error(f"global.domain is required")
+        logger.error(f"domain is required")
         return False
     if endpoint is None:
         logger.error(f"{service_name}.api.endpoint is required")

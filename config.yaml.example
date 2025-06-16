@@ -1,17 +1,15 @@
-global:
-  domain: "yourdomain.com"
-  destination: "/home/user/backups"
-  mysql:
-    container: "mysql"
-    username: "username"
-    password: "password"
-  mariadb:
-    container: "mariadb"
-    username: "username"
-    password: "password"
-  postgres:
-    container: "postgres"
-
+domain: "yourdomain.com"
+destination: "/home/user/backups"
+mysql:
+  container: "mysql"
+  username: "username"
+  password: "password"
+mariadb:
+  container: "mariadb"
+  username: "username"
+  password: "password"
+postgres:
+  container: "postgres"
 services:
   your_service:
     fs:

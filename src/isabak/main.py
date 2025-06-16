@@ -15,14 +15,14 @@ logging.basicConfig(
 )
 
 logger = logging.getLogger(__name__)
+
 app_name = "isabak"
+config_file_path = "config.yaml"
+env_file_path = ".env"
 
 
 def main():
     logger.info(f"{app_name} started")
-
-    config_file_path = "config.yaml"
-    env_file_path = ".env"
 
     load_env(env_file_path)
     config = load_config(config_file_path)
@@ -37,9 +37,7 @@ def main():
 
     logger.debug("configuration loaded")
 
-    config_global = config.get("global")
-
-    base_destination = get_base_destination(config_global.get("destination"))
+    base_destination = get_base_destination(config.get("destination"))
 
     if base_destination is None:
         return
@@ -64,7 +62,7 @@ def main():
             mysql_backup(
                 service_name,
                 service_options.get("mysql"),
-                config_global.get("mysql", {}),
+                config.get("mysql", {}),
                 destination,
             )
 
@@ -72,7 +70,7 @@ def main():
             mariadb_backup(
                 service_name,
                 service_options.get("mariadb"),
-                config_global.get("mariadb", {}),
+                config.get("mariadb", {}),
                 destination,
             )
 
@@ -83,7 +81,7 @@ def main():
             arr_backup(
                 service_name,
                 service_options.get("arr"),
-                config_global.get("domain"),
+                config.get("domain"),
                 destination,
             )
 

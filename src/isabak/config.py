@@ -31,11 +31,11 @@ def load_config(path: str) -> dict | None:
     config = yaml_load(f)
 
     if not isinstance(config, dict):
-        logger.error(f"{path} is empty or not valid")
+        logger.error(f"{path} is empty or malformed")
         return None
 
-    if config.get("global") is None:
-        config["global"] = {}
+    if config.get("services") is None:
+        config["services"] = {}
 
     logger.debug(f"{path} loaded")
 
@@ -43,15 +43,17 @@ def load_config(path: str) -> dict | None:
 
 
 def merge_config(config: dict) -> dict:
-    logger.debug(f"merging env into config")
+    logger.debug(f"merging env to config")
 
     env_destination = getenv("DESTINATION")
     if env_destination is not None:
-        config["global"]["destination"] = env_destination
+        config["destination"] = env_destination
 
     env_domain = getenv("DOMAIN")
     if env_domain is not None:
-        config["global"]["domain"] = env_domain
+        config["domain"] = env_domain
+
+    logger.debug(f"env to config merge completed")
 
     return config
 
@@ -59,16 +61,19 @@ def merge_config(config: dict) -> dict:
 def verify_config(config: dict) -> bool:
     logger.debug(f"verifying configuration")
 
-    if config.get("global").get("destination") is None:
-        logger.error("global.destination config was not set")
+    if config.get("destination") is None:
+        logger.error("destination is required")
         return False
 
-    if config.get("global").get("domain") is None:
-        logger.debug("global.domain config was not set")
+    if config.get("domain") is None:
+        logger.debug("domain was not defined")
 
     if not isinstance(config.get("services"), dict):
-        logger.error("no services defined in config file")
+        logger.error("services is malformed")
         return False
+
+    if not config.get("services"):
+        logger.debug("services were not defined")
 
     logger.info(f"configuration ok")
 
