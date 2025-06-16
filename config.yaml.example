@@ -26,7 +26,7 @@ services:
       endpoint: "/api/v3"
       subdomain: "radarr"
       api_key: "api-key"
-      folder: "/home/user/your_service_files/backups"
+      folder: "/home/user/your_service_files/arr_generated_backups"
       secure: true
 borg:
   repository: "ssh://user@host:/"
