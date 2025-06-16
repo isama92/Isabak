@@ -21,7 +21,7 @@ services:
     postgres:
       username: "username"
       password: "password"
-      database: "your_service_db"
+      db_name: "your_service_db"
     arr:
       endpoint: "/api/v3"
       subdomain: "radarr"
