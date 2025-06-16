@@ -102,8 +102,7 @@ def get_base_destination(destination: str) -> str | None:
         rmtree(base_destination)
         pass
     except Exception as e:
-        logger.error(f"could not remove existing backup destination folder ({e})")
-        return None
+        logger.debug(f"could not remove existing backup destination folder ({e})")
 
     try:
         makedirs(base_destination)
