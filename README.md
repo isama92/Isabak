@@ -2,6 +2,14 @@
 
 Backup your docker services.
 
+## Compatibilities
+
+Tested on:
+- Ubuntu 24.04
+- Debian 12
+
+I don't think it works on Windows systems.
+
 ## Dependencies
 
 Install all the dependencies by running `pip install -r requirements.txt`.
