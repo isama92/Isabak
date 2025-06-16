@@ -43,3 +43,4 @@ If omitted, borg default compression will be set to `none`.
   - it will show borgbackup disk usage and upload times
 - allow arrays in yaml config services, to have multiple fs or multiple DBs
 - remove "global" config, leave the various configurations in the root
+- borg prune customisation
