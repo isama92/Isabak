@@ -3,6 +3,9 @@ from yaml import safe_load as yaml_load
 from os import getenv
 from os.path import exists as path_exists
 from dotenv import load_dotenv
+from os import makedirs
+from os.path import join as path_join
+from shutil import rmtree
 
 logger = get_logger(__name__)
 
@@ -35,9 +38,6 @@ def load_config() -> dict | None:
         logger.error(f"{config_file_path} is empty or malformed")
         return None
 
-    if config.get("services") is None:
-        config["services"] = {}
-
     logger.debug(f"{config_file_path} loaded")
 
     return config
@@ -59,23 +59,19 @@ def merge_config(config: dict) -> dict:
     return config
 
 
-def verify_config(config: dict) -> bool:
-    logger.debug(f"verifying configuration")
+def get_base_destination(destination: str) -> str | None:
+    base_destination = path_join(destination, app_name)
 
-    if config.get("destination") is None:
-        logger.error("destination is required")
-        return False
+    try:
+        rmtree(base_destination)
+        pass
+    except Exception as e:
+        logger.debug(f"could not remove existing backup destination folder ({e})")
 
-    if config.get("domain") is None:
-        logger.debug("domain was not defined")
+    try:
+        makedirs(base_destination)
+    except Exception as e:
+        logger.error(f"could not create backup destination folder ({e})")
+        return None
 
-    if not isinstance(config.get("services"), dict):
-        logger.error("services is malformed")
-        return False
-
-    if not config.get("services"):
-        logger.debug("services were not defined")
-
-    logger.info(f"configuration ok")
-
-    return True
+    return base_destination

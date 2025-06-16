@@ -46,7 +46,7 @@ A folder `isabak` will be created at the `destination` and backups will be added
 If omitted, borg default compression will be set to `none`.
 
 ## TODO
-- move services to services.py, like borg.py
+- use services as an array, add the name key to it
 - allow arrays in yaml config services, to have multiple fs or multiple DBs
 - move logger config to another file instead of main.py
 - borg prune customisation

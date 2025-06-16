@@ -5,7 +5,7 @@ from src.isabak.logs import get_logger
 logger = get_logger(__name__)
 
 
-def borg(options: dict):
+def borg_transfer(options: dict):
     logger.debug("starting borg transfers")
 
     repository = options.get("repository")
@@ -100,7 +100,7 @@ def check_options(
         return False
     for entry in folders:
         if not isinstance(entry, dict):
-            logger.error("borg.folders format is not valid")
+            logger.error("borg.folders format is invalid")
             return False
         if not isinstance(entry.get("repository"), str):
             logger.error("borg.folders.repository is required")
