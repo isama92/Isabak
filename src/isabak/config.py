@@ -1,43 +1,44 @@
+from src.isabak.logs import get_logger
 from yaml import safe_load as yaml_load
 from os import getenv
 from os.path import exists as path_exists
-from logging import getLogger
 from dotenv import load_dotenv
 
-logger = getLogger(__name__)
+logger = get_logger(__name__)
+
+app_name = "isabak"
+config_file_path = "config.yaml"
+env_file_path = ".env"
 
 
-def load_env(path: str) -> None:
-    logger.debug(f"loading {path}")
+def load_env() -> bool:
+    if not path_exists(env_file_path):
+        return False
 
-    if not path_exists(path):
-        logger.debug(f"{path} not found")
-        return
+    load_dotenv(env_file_path)
 
-    load_dotenv(path)
-
-    logger.debug(f"{path} loaded")
+    return True
 
 
-def load_config(path: str) -> dict | None:
-    logger.debug(f"loading {path}")
+def load_config() -> dict | None:
+    logger.debug(f"loading {config_file_path}")
 
     try:
-        f = open(path, "r")
+        f = open(config_file_path, "r")
     except FileNotFoundError:
-        logger.error(f"{path} not found")
+        logger.error(f"{config_file_path} not found")
         return None
 
     config = yaml_load(f)
 
     if not isinstance(config, dict):
-        logger.error(f"{path} is empty or malformed")
+        logger.error(f"{config_file_path} is empty or malformed")
         return None
 
     if config.get("services") is None:
         config["services"] = {}
 
-    logger.debug(f"{path} loaded")
+    logger.debug(f"{config_file_path} loaded")
 
     return config
 

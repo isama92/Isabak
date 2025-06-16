@@ -1,4 +1,3 @@
-from logging import getLogger
 import requests
 from json import dumps as json_dumps
 from time import sleep
@@ -6,8 +5,9 @@ from os import listdir
 from os.path import isfile as path_isfile, join as path_join
 from shutil import copy2 as shutil_copy2
 from src.isabak.helpers import replace_env_vars
+from src.isabak.logs import get_logger
 
-logger = getLogger(__name__)
+logger = get_logger(__name__)
 
 
 def arr_backup(

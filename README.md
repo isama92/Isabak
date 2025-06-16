@@ -17,13 +17,23 @@ e.g. if you set both the `destination` in the `config.yaml` and the `DESTINATION
 
 All services paths can use ${} to add an environment variable in the path itself. e.g. `folder: "${YOUR_SERVICE_BASE_PATH}/your_service_files"` where the env variable `YOUR_SERVICE_BASE_PATH` is `/home/user/` will become `/home/user/your_service_files`. In this specific situations, env variables can only be named with letter numbers and underscores (`_`). 
 
-### Env to Yaml mapping
-DOMAIN => domain
-DESTINATION => destination
+### Yaml List
 
-### List
 - `domain`: used to generate backups for the ARR stack.
 - `destination`: place where backups will be created
+
+### Env List
+
+- `DOMAIN`: same as yaml
+- `DESTINATION`: same as yaml
+- `LOG_LEVEL`: possible values are `error`, `warning`, `info`, `debug`, default is `error`
+
+### Env to Yaml mapping
+
+Some Env configuration will override the Yaml configuration:
+
+- DOMAIN => domain
+- DESTINATION => destination
 
 ## Notes
 
@@ -36,7 +46,7 @@ A folder `isabak` will be created at the `destination` and backups will be added
 If omitted, borg default compression will be set to `none`.
 
 ## TODO
-- Change logs level using config.yaml `log_level`
+- move services to services.py, like borg.py
 - allow arrays in yaml config services, to have multiple fs or multiple DBs
 - move logger config to another file instead of main.py
 - borg prune customisation

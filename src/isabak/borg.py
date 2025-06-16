@@ -1,8 +1,8 @@
-from logging import getLogger
 import subprocess
 from src.isabak.helpers import replace_env_vars
+from src.isabak.logs import get_logger
 
-logger = getLogger(__name__)
+logger = get_logger(__name__)
 
 
 def borg(options: dict):
@@ -52,7 +52,15 @@ def borg_create(env: dict, entry: dict):
         folder,
     ]
     # fmt: on
-    subprocess.run(borg_cmd, check=True, env=env)
+
+    subprocess.run(
+        borg_cmd,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        check=True,
+        env=env,
+    )
+
     logger.debug(f"{env.get('BORG_REPO')} transfer completed")
 
 

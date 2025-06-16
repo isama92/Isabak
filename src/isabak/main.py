@@ -1,4 +1,12 @@
-from src.isabak.config import *
+from src.isabak.config import (
+    app_name,
+    env_file_path,
+    load_env,
+    load_config,
+    merge_config,
+    verify_config,
+)
+from src.isabak.logs import get_logger, set_basic_log_config
 from src.isabak.services.fs_backup import fs_backup
 from src.isabak.services.mysql_backup import mysql_backup
 from src.isabak.services.mariadb_backup import mariadb_backup
@@ -7,25 +15,20 @@ from src.isabak.services.arr_backup import arr_backup
 from src.isabak.borg import borg
 from os import makedirs
 from os.path import join as path_join
-import logging
 from shutil import rmtree
-
-logging.basicConfig(
-    level=logging.DEBUG, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-)
-
-logger = logging.getLogger(__name__)
-
-app_name = "isabak"
-config_file_path = "config.yaml"
-env_file_path = ".env"
 
 
 def main():
+    env_loaded = load_env()
+
+    set_basic_log_config()
+    logger = get_logger(__name__)
+
     logger.info(f"{app_name} started")
 
-    load_env(env_file_path)
-    config = load_config(config_file_path)
+    logger.debug("{} {}".format(env_file_path, "loaded" if env_loaded else "not found"))
+
+    config = load_config()
 
     if config is None:
         return
@@ -45,7 +48,7 @@ def main():
     logger.debug("starting backups")
 
     for service_name, service_options in config.get("services").items():
-        logger.info(f"{service_name} starting")
+        logger.debug(f"{service_name} starting")
 
         if not isinstance(service_options, dict):
             logger.error(f"service '{service_name}' options are not valid")
@@ -85,7 +88,7 @@ def main():
                 destination,
             )
 
-        logger.info(f"{service_name} finished")
+        logger.debug(f"{service_name} finished")
 
     if config.get("borg") is not None:
         borg(config.get("borg"))

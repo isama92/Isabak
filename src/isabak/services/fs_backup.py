@@ -1,9 +1,9 @@
 from src.isabak.helpers import replace_env_vars
 from os.path import join as path_join, exists as path_exists
-from logging import getLogger
 import subprocess
+from src.isabak.logs import get_logger
 
-logger = getLogger(__name__)
+logger = get_logger(__name__)
 
 
 def fs_backup(service_name: str, service_options: dict, destination: str):

@@ -1,8 +1,8 @@
-from logging import getLogger
 from os.path import join as path_join
 import subprocess
+from src.isabak.logs import get_logger
 
-logger = getLogger(__name__)
+logger = get_logger(__name__)
 
 
 def mysql_backup(

@@ -1,11 +1,11 @@
-from logging import getLogger
 from os import makedirs, getuid, getgid
 from os.path import join as path_join, exists as path_exists, realpath as path_realpath
 from shutil import move as shutil_move
 from shutil import rmtree as shutil_rmtree
 import subprocess
+from src.isabak.logs import get_logger
 
-logger = getLogger(__name__)
+logger = get_logger(__name__)
 
 
 def postgres_backup(service_name: str, service_options: dict, destination: str):
@@ -57,21 +57,21 @@ def create_backup(
     db_password: str,
     tmp_folder: str,
 ) -> bool:
-    try:
-        # fmt: off
-        docker_cmd = [
-            "docker", "run", "--rm",
-            "-v", f"{tmp_folder}:/backups",
-            "-u", f"{getuid()}:{getgid()}",
-            "--network", db_network,
-            "-e", f"POSTGRES_HOST={db_container}",
-            "-e", f"POSTGRES_DB={db_name}",
-            "-e", f"POSTGRES_USER={db_username}",
-            "-e", f"POSTGRES_PASSWORD={db_password}",
-            "prodrigestivill/postgres-backup-local", "/backup.sh"
-        ]
-        # fmt: on
+    # fmt: off
+    docker_cmd = [
+        "docker", "run", "--rm",
+        "-v", f"{tmp_folder}:/backups",
+        "-u", f"{getuid()}:{getgid()}",
+        "--network", db_network,
+        "-e", f"POSTGRES_HOST={db_container}",
+        "-e", f"POSTGRES_DB={db_name}",
+        "-e", f"POSTGRES_USER={db_username}",
+        "-e", f"POSTGRES_PASSWORD={db_password}",
+        "prodrigestivill/postgres-backup-local", "/backup.sh"
+    ]
+    # fmt: on
 
+    try:
         subprocess.run(
             docker_cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True
         )
