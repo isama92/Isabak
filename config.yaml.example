@@ -11,7 +11,7 @@ mariadb:
 postgres:
   container: "postgres"
 services:
-  your_service:
+  - name: your_service
     fs:
       folder: "/home/user/your_service_files"
     mysql:

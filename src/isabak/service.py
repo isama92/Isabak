@@ -25,39 +25,40 @@ def services_backup(config: dict):
     if base_destination is None:
         return
 
-    for service_name, service_options in services.items():
+    for service in services:
+        service_name = service.get("name")
         logger.debug(f"{service_name} starting")
 
         destination = str(path_join(base_destination, service_name, ""))
 
         makedirs(destination, exist_ok=True)
 
-        if service_options.get("fs") is not None:
-            fs_backup(service_name, service_options.get("fs"), destination)
+        if service.get("fs") is not None:
+            fs_backup(service_name, service.get("fs"), destination)
 
-        if service_options.get("mysql") is not None:
+        if service.get("mysql") is not None:
             mysql_backup(
                 service_name,
-                service_options.get("mysql"),
+                service.get("mysql"),
                 config.get("mysql", {}),
                 destination,
             )
 
-        if service_options.get("mariadb") is not None:
+        if service.get("mariadb") is not None:
             mariadb_backup(
                 service_name,
-                service_options.get("mariadb"),
+                service.get("mariadb"),
                 config.get("mariadb", {}),
                 destination,
             )
 
-        if service_options.get("postgres") is not None:
-            postgres_backup(service_name, service_options.get("postgres"), destination)
+        if service.get("postgres") is not None:
+            postgres_backup(service_name, service.get("postgres"), destination)
 
-        if service_options.get("arr") is not None:
+        if service.get("arr") is not None:
             arr_backup(
                 service_name,
-                service_options.get("arr"),
+                service.get("arr"),
                 config.get("domain"),
                 destination,
             )
@@ -71,11 +72,17 @@ def check_options(destination, services) -> bool:
     if not isinstance(destination, str):
         logger.error("destination is required")
         return False
-    if not isinstance(services, dict):
-        logger.error("services is required")
+    if not isinstance(services, list):
+        logger.error("services is malformed")
         return False
-    for service_name, service_options in services.items():
-        if not isinstance(service_options, dict):
-            logger.error(f"service '{service_name}' options are invalid")
+    for service in services:
+        if not isinstance(service, dict):
+            logger.error(f"services is malformed")
+            return False
+        if not isinstance(service.get("name"), str):
+            logger.error("services name is required")
+            return False
+        if not isinstance(service.get("name"), str):
+            logger.error("services name is required")
             return False
     return True
