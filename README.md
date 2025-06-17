@@ -56,5 +56,7 @@ If omitted, borg default compression will be set to `none`.
 ## TODO
 - allow arrays in yaml config services, to have multiple fs or multiple DBs
 - add home assistant backups (ask creation through api like arr?)
+- better plex backups, they are huge
 - borg prune customisation
 - automated tests
+- run services in parallel

@@ -21,6 +21,10 @@ def borg_transfer(options: dict):
             borg_create(entry_borg_env, entry)
             borg_prune(entry_borg_env)
             borg_compact(entry_borg_env)
+        except subprocess.CalledProcessError as e:
+            logger.exception(e)
+            log_std_outputs(e)
+            return
         except Exception as e:
             logger.exception(e)
             return
@@ -53,7 +57,6 @@ def borg_create(env: dict, entry: dict):
         folder,
     ]
     # fmt: on
-
     process = subprocess.run(
         borg_cmd,
         stdout=subprocess.PIPE,
@@ -61,12 +64,7 @@ def borg_create(env: dict, entry: dict):
         check=True,
         env=env,
     )
-
-    if process.stdout:
-        logger.debug(process.stdout.decode().strip())
-    if process.stderr:
-        logger.debug(process.stderr.decode().strip())
-
+    log_std_outputs(process)
     logger.debug(f"{env.get('BORG_REPO')} transfer completed")
 
 
@@ -81,14 +79,28 @@ def borg_prune(env: dict):
         "--keep-monthly", "1"
     ]
     # fmt: on
-    subprocess.run(borg_cmd, check=True, env=env)
+    process = subprocess.run(
+        borg_cmd,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=True,
+        env=env,
+    )
+    log_std_outputs(process)
     logger.debug(f"{env.get('BORG_REPO')} prune completed")
 
 
 def borg_compact(env: dict):
     logger.debug(f"{env.get('BORG_REPO')} compact started")
     borg_cmd = ["borg", "compact"]
-    subprocess.run(borg_cmd, check=True, env=env)
+    process = subprocess.run(
+        borg_cmd,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=True,
+        env=env,
+    )
+    log_std_outputs(process)
     logger.debug(f"{env.get('BORG_REPO')} compact completed")
 
 
@@ -115,3 +127,10 @@ def check_options(
             logger.error("borg.folders.folder is required")
             return False
     return True
+
+
+def log_std_outputs(pipe):
+    if pipe.stdout:
+        logger.debug(pipe.stdout.decode().strip())
+    if pipe.stderr:
+        logger.debug(pipe.stderr.decode().strip())
