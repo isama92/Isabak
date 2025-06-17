@@ -23,7 +23,7 @@ def borg_transfer(options: dict):
             borg_compact(entry_borg_env)
         except subprocess.CalledProcessError as e:
             logger.exception(e)
-            log_std_outputs(e)
+            log_std_outputs(e, True)
             return
         except Exception as e:
             logger.exception(e)
@@ -129,8 +129,9 @@ def check_options(
     return True
 
 
-def log_std_outputs(pipe):
+def log_std_outputs(pipe, error=False):
+    log = logger.debug if not error else logger.error
     if pipe.stdout:
-        logger.debug(pipe.stdout.decode().strip())
+        log(pipe.stdout.decode().strip())
     if pipe.stderr:
-        logger.debug(pipe.stderr.decode().strip())
+        log(pipe.stderr.decode().strip())
